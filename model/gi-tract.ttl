@@ -18,7 +18,7 @@
 
 :q_gi_W
     a bgf:HydraulicStorage ;
-    bgf:hasVariable [
+    bgf:variableValue [
         bgf:varName "E" ;
         bgf:hasValue "1 J"^^cdt:ucum
     ] .
