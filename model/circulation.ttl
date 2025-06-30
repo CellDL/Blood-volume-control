@@ -9,7 +9,7 @@
 
 #===============================================================================
 
-:model
+:circulation_model
     a bgf:BondgraphModel ;
     bgf:hasBondElement :q_vc_W, :u_ac_W.q, :v_cc_W.R ;
     # Interfaces
