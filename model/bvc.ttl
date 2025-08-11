@@ -17,9 +17,9 @@
 :BVC_model
     a bgf:BondgraphModel ;
     bgf:hasBondElement
-        :v_gi_W, :v_gi_NKE, :q_giEpi_Na, :v_giEpi_Na, :q_gi_Na, :q_gi_W,
+        :v_gi_W, :v_giEpi_NKE, :q_giEpi_Na, :v_gi_Na, :q_gi_Na, :q_gi_W,
         :v_gl_W, :v_gl_Na,
-        :v_pt_W, :v_pt_NKE, :q_ptEpi_Na, :v_ptEpi_Na, :q_pt_Na, :q_pt_W,
+        :v_pt_W, :v_ptEpi_NKE, :q_ptEpi_Na, :v_pt_Na, :q_pt_Na, :q_pt_W,
         :q_vc_W, :q_ac_W, :q_vc_Na, :v_cc_W,
         :v_lv_W, :v_in_W, :v_out1_W, :v_out2_W,
         :v_in_Na, :v_out1_Na, :v_out2_Na .
@@ -75,7 +75,7 @@
 #
 # v = k_osmosis*(u_W_i - u_W_o - RT*(q_solute_i/q_W_i - q_solute_out/q_W_o));
 
-:v_gi_NKE
+:v_giEpi_NKE
     a bgf:NKETransporterNode ;
     bgf:parameterValue [
         bgf:varName "k_NKE" ;
@@ -130,7 +130,7 @@
     ] .
 # var q_giEpi_Na: mole {init: 0.012};
 
-:v_giEpi_Na
+:v_gi_Na
     a bgf:ChemicalReactionNode ;
     bgf:parameterValue [
         bgf:varName "kappa" ;
@@ -170,13 +170,13 @@
 :gi_bond_3
     bgf:hasSource :q_gi_Na ;
     bgf:hasTarget [
-        bgf:element :v_giEpi_Na ;
+        bgf:element :v_gi_Na ;
         bgf:port 'f'
     ] .
 
 :gi_bond_4
     bgf:hasSource [
-        bgf:element :v_giEpi_Na ;
+        bgf:element :v_gi_Na ;
         bgf:port 'r'
     ] ;
     bgf:hasTarget :q_giEpi_Na .
@@ -184,8 +184,8 @@
 :gi_bond_5
     bgf:hasSource :q_giEpi_Na ;
     bgf:hasTarget [
-        bgf:element :v_gi_NKE ;
-        bgf:port "Na_f"
+        bgf:element :v_giEpi_NKE ;
+        bgf:port 'Na_f'
     ] .
 
 :gi_bond_6
@@ -263,7 +263,7 @@
 # v_pt_W = k_pt_W*(u_vc_osmotic-u_pt_osmotic);
 #          RT*k_pt_W*(q_vc_Na/q_vc_W-q_pt_Na/q_pt_W)
 
-:v_pt_NKE
+:v_ptEpi_NKE
     a bgf:NKETransporterNode ;
     bgf:parameterValue [
         bgf:varName "k_NKE" ;
@@ -318,7 +318,7 @@
     ] .
 # var q_ptEpi_Na: mole {init: 0.012};
 
-:v_ptEpi_Na
+:v_pt_Na
     a bgf:ChemicalReactionNode ;
     bgf:parameterValue [
         bgf:varName "kappa" ;
@@ -374,13 +374,13 @@
 :kidney_bond_3
     bgf:hasSource :q_pt_Na ;
     bgf:hasTarget [
-        bgf:element :v_ptEpi_Na ;
+        bgf:element :v_pt_Na ;
         bgf:port 'f'
     ] .
 
 :kidney_bond_4
     bgf:hasSource [
-        bgf:element :v_ptEpi_Na ;
+        bgf:element :v_pt_Na ;
         bgf:port 'r'
     ] ;
     bgf:hasTarget :q_ptEpi_Na .
@@ -388,8 +388,8 @@
 :kidney_bond_5
     bgf:hasSource :q_ptEpi_Na ;
     bgf:hasTarget [
-        bgf:element :v_pt_NKE ;
-        bgf:port "Na_f"
+        bgf:element :v_ptEpi_NKE ;
+        bgf:port 'Na_f'
     ] .
 
 :kidney_bond_6
@@ -483,15 +483,15 @@
 
 :circ_bond_1
     bgf:hasSource [
-        bgf:element :v_gi_NKE ;
-        bgf:port "Na_r"
+        bgf:element :v_giEpi_NKE ;
+        bgf:port 'Na_r'
     ] ;
     bgf:hasTarget :q_vc_Na .
 
 :circ_bond_2
     bgf:hasSource [
-        bgf:element :v_pt_NKE ;
-        bgf:port "Na_r"
+        bgf:element :v_ptEpi_NKE ;
+        bgf:port 'Na_r'
     ] ;
     bgf:hasTarget :q_vc_Na .
 
