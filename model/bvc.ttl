@@ -49,7 +49,7 @@
 # var v_out1_Na: mol_per_s {init: 0};
 
 :v_gi_W
-    a bgf:OsmoticTransporterNode ;
+    a bgf:OldOsmosisNode ;
     bgf:parameterValue [
         bgf:varName "k_membrane" ;
         bgf:hasSymbol "k_gi_W" ;
@@ -198,10 +198,7 @@
 
 :gi_bond_8
     bgf:hasSource :q_gi_W ;
-    bgf:hasTarget [
-        bgf:element :v_gi_W ;
-        bgf:port "water_in"
-    ] .
+    bgf:hasTarget :v_gi_W .
 
 #===============================================================================
 
@@ -240,7 +237,7 @@
 # v_gl_Na     = kK_gl_Na*(q_vc_Na-q_pt_Na);
 
 :v_pt_W
-    a bgf:OsmoticTransporterNode ;
+    a bgf:OldOsmosisNode ;
     bgf:parameterValue [
         bgf:varName "k_membrane" ;
         bgf:hasSymbol "k_pt_W" ;
@@ -402,10 +399,7 @@
 
 :kidney_bond_8
     bgf:hasSource :q_pt_W ;
-    bgf:hasTarget [
-        bgf:element :v_pt_W ;
-        bgf:port "water_in"
-    ] .
+    bgf:hasTarget :v_pt_W .
 
 #===============================================================================
 
@@ -503,17 +497,11 @@
     ] .
 
 :circ_bond_4
-    bgf:hasSource [
-        bgf:element :v_gi_W ;
-        bgf:port "water_out"
-    ] ;
+    bgf:hasSource :v_gi_W ;
     bgf:hasTarget :q_vc_W .
 
 :circ_bond_5
-    bgf:hasSource [
-        bgf:element :v_pt_W ;
-        bgf:port "water_out"
-    ] ;
+    bgf:hasSource :v_pt_W ;
     bgf:hasTarget :q_vc_W .
 
 :circ_bond_6
