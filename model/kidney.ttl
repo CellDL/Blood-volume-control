@@ -1,4 +1,4 @@
-@prefix bgf: <https://celldl.org/ontologies/bondgraph-framework#> .
+@prefix bgf: <https://bg-rdf.org/ontologies/bondgraph-framework#> .
 @prefix cdt: <https://w3id.org/cdt/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
@@ -6,20 +6,53 @@
 
 #===============================================================================
 
-:model
+:kidney
     a bgf:BondgraphModel ;
-    bgf:hasBondElement :q_pt_W, :v_pt_W.R ;
-    bgf:hasJunctionStructure
-        :v_gl_W, :q_pt_W.u,
-        :v_pt_W, :v_out2_W .
+    bgf:usesTemplate
+        '../../BG-RDF/schema/elements/chemical.ttl' ,
+        '../../BG-RDF/schema/elements/hydraulic.ttl' ;
+    bgf:hasBondElement
+        :v_out2_W, :v_out2_Na,
+        :v_gl_W, :v_gl_Na,
+        :q_pt_W, :v_pt_W,
+        :q_pt_Na, :v_pt_Na,
+        :q_ptEpi_NKE, :v_ptEpi_NKE .
 
 #===============================================================================
+#===============================================================================
+
+:v_out2_W
+    a bgf:HydraulicFlow ;
+    bgf:hasValue "0 L/s"^^cdt:ucum .
+
+:v_out2_Na
+    a bgf:ChemicalFlow ;
+    bgf:hasValue "1.16e-6 mol/s"^^cdt:ucum .
+
+#===============================================================================
+
+:v_gl_W
+    a bgf:HydraulicResistanceNode ;
+    bgf:parameterValue [
+        bgf:varName "k" ;
+        bgf:hasSymbol "k_gl_W" ;
+        bgf:hasValue "1 L.s-1.kPa-1"^^cdt:ucum
+    ] .
+
+:v_gl_Na
+    a bgf:ChemicalReactionNode ;
+    bgf:parameterValue [
+        bgf:varName "kappa" ;
+        bgf:hasSymbol "kappa_gl_Na" ;
+        bgf:hasValue "1 mol/s"^^cdt:ucum
+    ] .
+
 #===============================================================================
 
 :q_pt_W
-    a bgf:ElasticVessel ;
+    a bgf:HydraulicElasticStorageNode ;
     bgf:hasValue "0.1 L"^^cdt:ucum ;
-    bgf:variableValue [
+    bgf:parameterValue [
         bgf:varName "E" ;
         bgf:hasSymbol "E_pt" ;
         bgf:hasValue "1 J"^^cdt:ucum
@@ -33,52 +66,141 @@
         bgf:hasValue "1 L"^^cdt:ucum
     ] .
 
-:q_pt_W.u
-    a bgf:ZeroNode .
-
-:q_pt_W.bond
-    bgf:hasSource :q_pt_W.u ;
-    bgf:hasTarget :q_pt_W .
-
-#===============================================================================
-
-:v_pt_W.R
-    a bgf:HydraulicResistor ;
-    bgf:variableValue [
-        bgf:varName "k" ;
-        bgf:hasSymbol "k_gi_W" ;
-        bgf:hasValue "1 L.s-1.kPa-1"^^cdt:ucum
+:v_pt_W
+    a bgf:OldOsmosisNode ;
+    bgf:parameterValue [
+        bgf:varName "k_membrane" ;
+        bgf:hasSymbol "k_pt_W" ;
+        bgf:hasValue "0 L.s-1.kPa-1"^^cdt:ucum
+    ], [
+        bgf:varName "q_solute_in" ;
+        bgf:hasValue :q_pt_Na
+    ], [
+        bgf:varName "q_water_in" ;
+        bgf:hasValue :q_pt_W
+    ], [
+        bgf:varName "q_solute_out" ;
+        bgf:hasValue :q_vc_Na
+    ], [
+        bgf:varName "q_water_out" ;
+        bgf:hasValue :q_vc_W
     ] .
 
-:v_pt_W
-    a bgf:OneNode .
+#===============================================================================
 
-:v_pt_W.bond
-    bgf:hasSource :v_pt_W ;
-    bgf:hasTarget :v_pt_W.R .
+:v_pt_Na
+    a bgf:ChemicalReactionNode ;
+    bgf:parameterValue [
+        bgf:varName "kappa" ;
+        bgf:hasSymbol "kappa_pt_Na" ;
+        bgf:hasValue "1 mol/s"^^cdt:ucum
+    ] .
+
+:q_pt_Na
+    a bgf:ChemicalStorageNode ;
+    bgf:hasValue "0.01 mol"^^cdt:ucum ;
+    bgf:parameterValue [
+        bgf:varName "K" ;
+        bgf:hasValue "1 mol-1"^^cdt:ucum
+    ] .
 
 #===============================================================================
 
-:v_gl_W
-    a bgf:OneNode .
+:v_ptEpi_NKE
+    a bgf:NKETransporterNode ;
+    ## Need to multiply CR by 3
+    bgf:parameterValue [
+        bgf:varName "k_NKE" ;
+        bgf:hasSymbol "k_ptEpi_NKE" ;
+        bgf:hasValue "1e5 mol/s"^^cdt:ucum
+    ], [
+        bgf:varName "u_e";
+        bgf:hasSymbol "u_ptEpi_e" ;
+        bgf:hasValue "-0.040 J/C"^^cdt:ucum
+    ], [
+        bgf:varName "q_H2O_in" ;
+        bgf:hasSymbol "q_ptEpi_W" ;
+        bgf:hasValue "0.5 L"^^cdt:ucum
+    ], [
+        bgf:varName "q_H2O_out" ;
+        bgf:hasValue :q_vc_W
+    ], [
+        bgf:varName "K_Na" ;
+        bgf:hasSymbol "K_Na" ;
+        bgf:hasValue "1 L/mol"^^cdt:ucum
+    ], [
+        bgf:varName "q_Na_in" ;
+        bgf:hasValue :q_ptEpi_Na
+    ], [
+        bgf:varName "q_Na_out" ;
+        bgf:hasValue :q_vc_Na
+    ], [
+        bgf:varName "K_K";
+        bgf:hasSymbol "K_K" ;
+        bgf:hasValue "1 L/mol"^^cdt:ucum
+    ], [
+        bgf:varName "q_K_in" ;
+        bgf:hasSymbol "q_ptEpi_K" ;
+        bgf:hasValue "0.012 mol"^^cdt:ucum
+    ], [
+        bgf:varName "q_K_out" ;
+        bgf:hasSymbol "q_vc_K" ;
+        bgf:hasValue "0.03 mol"^^cdt:ucum
+    ] .
 
-:v_out2_W
-    a bgf:OneNode ;
-    bgf:hasValue "0 L/s"^^cdt:ucum .
+:q_ptEpi_Na
+    a bgf:ChemicalStorageNode ;
+    bgf:hasValue "0.012 mol"^^cdt:ucum ;
+    bgf:parameterValue [
+        bgf:varName "K" ;
+        bgf:hasValue "1 mol-1"^^cdt:ucum
+    ] .
 
 #===============================================================================
 #===============================================================================
 
-:v_gl_W.q_pt_W.u
+:kidney_bond_1
+    bgf:hasSource [
+        bgf:element :v_gl_Na ;
+        bgf:port 'r'
+    ] ;
+    bgf:hasTarget :q_pt_Na .
+
+:kidney_bond_2
+    bgf:hasSource :q_pt_Na ;
+    bgf:hasTarget :v_out2_Na .
+
+:kidney_bond_3
+    bgf:hasSource :q_pt_Na ;
+    bgf:hasTarget [
+        bgf:element :v_pt_Na ;
+        bgf:port 'f'
+    ] .
+
+:kidney_bond_4
+    bgf:hasSource [
+        bgf:element :v_pt_Na ;
+        bgf:port 'r'
+    ] ;
+    bgf:hasTarget :q_ptEpi_Na .
+
+:kidney_bond_5
+    bgf:hasSource :q_ptEpi_Na ;
+    bgf:hasTarget [
+        bgf:element :v_ptEpi_NKE ;
+        bgf:port 'Na_f'
+    ] .
+
+:kidney_bond_6
     bgf:hasSource :v_gl_W ;
-    bgf:hasTarget :q_pt_W.u .
+    bgf:hasTarget :q_pt_W .
 
-:q_pt_W.v_out2_W
-    bgf:hasSource :q_pt_W.u ;
+:kidney_bond_7
+    bgf:hasSource :q_pt_W ;
     bgf:hasTarget :v_out2_W .
 
-:q_pt_W.v_pt_W
-    bgf:hasSource :q_pt_W.u ;
+:kidney_bond_8
+    bgf:hasSource :q_pt_W ;
     bgf:hasTarget :v_pt_W .
 
 #===============================================================================

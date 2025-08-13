@@ -1,4 +1,4 @@
-@prefix bgf: <https://celldl.org/ontologies/bondgraph-framework#> .
+@prefix bgf: <https://bg-rdf.org/ontologies/bondgraph-framework#> .
 @prefix cdt: <https://w3id.org/cdt/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
@@ -6,70 +6,179 @@
 
 #===============================================================================
 
-:model
+:gi-tract
     a bgf:BondgraphModel ;
-    bgf:hasBondElement :q_gi_W, :v_gi_W.R ;
-    bgf:hasJunctionStructure
-        :v_in_W, :v_out1_W,
-        :v_gi_W, :q_gi_W.u .
+    bgf:usesTemplate
+        '../../BG-RDF/schema/elements/chemical.ttl' ,
+        '../../BG-RDF/schema/elements/hydraulic.ttl' ;
+    bgf:hasBondElement
+        :v_in_W, :v_in_Na,
+        :v_out1_W, :v_out1_Na,
+        :q_gi_W, :v_gi_W,
+        :q_gi_Na, :v_gi_Na,
+        :q_giEpi_NKE, :v_giEpi_NKE .
 
 #===============================================================================
-#===============================================================================
-
-:q_gi_W
-    a bgf:HydraulicStorage ;
-    bgf:variableValue [
-        bgf:varName "E" ;
-        bgf:hasValue "1 J"^^cdt:ucum
-    ] .
-
-:q_gi_W.u
-    a bgf:ZeroNode .
-
-:q_gi_W.bond
-    bgf:hasSource :q_gi_W.u ;
-    bgf:hasTarget :q_gi_W .
-
-#===============================================================================
-
-:v_gi_W.R
-    a bgf:HydraulicResistor ;
-    bgf:variableValue [
-        bgf:varName "k" ;
-        bgf:hasSymbol "k_gi_W" ;
-        bgf:hasValue "1 L.s-1.kPa-1"^^cdt:ucum
-    ] .
-
-:v_gi_W
-    a bgf:OneNode .
-
-:v_gi_W.bond
-    bgf:hasSource :v_gi_W ;
-    bgf:hasTarget :v_gi_W.R .
-
 #===============================================================================
 
 :v_in_W
-    a bgf:OneNode ;
+    a bgf:HydraulicFlow ;
     bgf:hasValue "0 L/s"^^cdt:ucum .
 
 :v_out1_W
-    a bgf:OneNode ;
+    a bgf:HydraulicFlow ;
     bgf:hasValue "0 L/s"^^cdt:ucum .
 
+:v_in_Na
+    a bgf:ChemicalFlow ;
+    bgf:hasValue "1.16e-6 mol/s"^^cdt:ucum .
+
+:v_out1_Na
+    a bgf:ChemicalFlow ;
+    bgf:hasValue "0 mol/s"^^cdt:ucum .
+
+#===============================================================================
+
+:q_gi_W
+    a bgf:HydraulicStorageNode ;
+    bgf:hasValue "1 L"^^cdt:ucum ;
+    bgf:parameterValue [
+        bgf:varName "E" ;  ### ??????????
+        bgf:hasValue "1 J"^^cdt:ucum
+    ] .
+
+:v_gi_W
+    a bgf:OldOsmosisNode ;
+    bgf:parameterValue [
+        bgf:varName "k_membrane" ;
+        bgf:hasSymbol "k_gi_W" ;
+        bgf:hasValue "1 L.s-1.kPa-1"^^cdt:ucum
+    ], [
+        bgf:varName "q_solute_in" ;
+        bgf:hasValue :q_gi_Na
+    ], [
+        bgf:varName "q_water_in" ;
+        bgf:hasValue :q_gi_W
+    ], [
+        bgf:varName "q_solute_out" ;
+        bgf:hasValue :q_vc_Na
+    ], [
+        bgf:varName "q_water_out" ;
+        bgf:hasValue :q_vc_W
+    ] .
+
+#===============================================================================
+
+:v_gi_Na
+    a bgf:ChemicalReactionNode ;
+    bgf:parameterValue [
+        bgf:varName "kappa" ;
+        bgf:hasSymbol "kappa_gi_Na" ;
+        bgf:hasValue "1 mol/s"^^cdt:ucum
+    ] .
+
+:q_gi_Na
+    a bgf:ChemicalStorageNode ;
+    bgf:hasValue "0.1 mol"^^cdt:ucum ;
+    bgf:parameterValue [
+        bgf:varName "K" ;
+        bgf:hasValue "1 mol-1"^^cdt:ucum
+    ] .
+
+#===============================================================================
+
+:v_giEpi_NKE
+    a bgf:NKETransporterNode ;
+    ## Need to multiply CR by 3
+    bgf:parameterValue [
+        bgf:varName "k_NKE" ;
+        bgf:hasSymbol "k_giEpi_NKE" ;
+        bgf:hasValue "1e4 mol/s"^^cdt:ucum
+    ], [
+        bgf:varName "u_e";
+        bgf:hasSymbol "u_giEpi_e" ;
+        bgf:hasValue "-0.040 J/C"^^cdt:ucum
+    ], [
+        bgf:varName "q_H2O_in" ;
+        bgf:hasSymbol "q_giEpi_W" ;
+        bgf:hasValue "0.5 L"^^cdt:ucum
+    ], [
+        bgf:varName "q_H2O_out" ;
+        bgf:hasValue :q_vc_W
+    ], [
+        bgf:varName "K_Na" ;
+        bgf:hasSymbol "K_Na" ;
+        bgf:hasValue "1 L/mol"^^cdt:ucum
+    ], [
+        bgf:varName "q_Na_in" ;
+        bgf:hasValue :q_giEpi_Na
+    ], [
+        bgf:varName "q_Na_out" ;
+        bgf:hasValue :q_vc_Na
+    ], [
+        bgf:varName "K_K";
+        bgf:hasSymbol "K_K" ;
+        bgf:hasValue "1 L/mol"^^cdt:ucum
+    ], [
+        bgf:varName "q_K_in" ;
+        bgf:hasSymbol "q_giEpi_K" ;
+        bgf:hasValue "0.012 mol"^^cdt:ucum
+    ], [
+        bgf:varName "q_K_out" ;
+        bgf:hasSymbol "q_vc_K" ;
+        bgf:hasValue "0.03 mol"^^cdt:ucum
+    ] .
+
+:q_giEpi_Na
+    a bgf:ChemicalStorageNode ;
+    bgf:hasValue "0.012 mol"^^cdt:ucum ;
+    bgf:parameterValue [
+        bgf:varName "K" ;
+        bgf:hasValue "1 mol-1"^^cdt:ucum
+    ] .
+
 #===============================================================================
 #===============================================================================
 
-:v_in_W.q_gi_W.u
+:gi_bond_1
+    bgf:hasSource :v_in_Na ;
+    bgf:hasTarget :q_gi_Na .
+
+:gi_bond_2
+    bgf:hasSource :q_gi_Na ;
+    bgf:hasTarget :v_out1_Na .
+
+:gi_bond_3
+    bgf:hasSource :q_gi_Na ;
+    bgf:hasTarget [
+        bgf:element :v_gi_Na ;
+        bgf:port 'f'
+    ] .
+
+:gi_bond_4
+    bgf:hasSource [
+        bgf:element :v_gi_Na ;
+        bgf:port 'r'
+    ] ;
+    bgf:hasTarget :q_giEpi_Na .
+
+:gi_bond_5
+    bgf:hasSource :q_giEpi_Na ;
+    bgf:hasTarget [
+        bgf:element :v_giEpi_NKE ;
+        bgf:port 'Na_f'
+    ] .
+
+:gi_bond_6
     bgf:hasSource :v_in_W ;
-    bgf:hasTarget :q_gi_W.u .
+    bgf:hasTarget :q_gi_W .
 
-:q_gi_W.v_out1_W
-    bgf:hasSource :q_gi_W.u ;
+:gi_bond_7
+    bgf:hasSource :q_gi_W ;
     bgf:hasTarget :v_out1_W .
 
-:q_gi_W.v_gi_W
-    bgf:hasSource :q_gi_W.u ;
+:gi_bond_8
+    bgf:hasSource :q_gi_W ;
     bgf:hasTarget :v_gi_W .
 
 #===============================================================================
