@@ -16,6 +16,9 @@
 
 :BVC_model
     a bgf:BondgraphModel ;
+    bgf:usesTemplate
+        '../../BG-RDF/schema/elements/chemical.ttl' ,
+        '../../BG-RDF/schema/elements/hydraulic.ttl' ;
     bgf:hasBondElement
         :v_gi_W, :v_giEpi_NKE, :q_giEpi_Na, :v_gi_Na, :q_gi_Na, :q_gi_W,
         :v_gl_W, :v_gl_Na,
